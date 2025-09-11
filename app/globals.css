@@ -1,26 +1,158 @@
-@import "tailwindcss";
+/* Update the global CSS to replace all oklch() with hex values */
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "tailwindcss";
+@import "tw-animate-css";
+@import 'tailwind-scrollbar-hide/v4';
+
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+:root {
+  --radius: 0.65rem;
+  --background: #ffffff;
+  --foreground: #252525;
+  --card: #ffffff;
+  --card-foreground: #252525;
+  --popover: #ffffff;
+  --popover-foreground: #252525;
+  --primary: #343434;
+  --primary-foreground: #fcfcfc;
+  --secondary: #f7f7f7;
+  --secondary-foreground: #343434;
+  --muted: #f7f7f7;
+  --muted-foreground: #8a8a8a;
+  --accent: #f7f7f7;
+  --accent-foreground: #343434;
+  --destructive: #cb4e31;
+  --border: #e8e8e8;
+  --input: #e8e8e8;
+  --ring: #b4b4b4;
+  --chart-1: #988c5a;
+  --chart-2: #846741;
+  --chart-3: #5f4a43;
+  --chart-4: #c29f6b;
+  --chart-5: #b58c5a;
+  --radius: 0.625rem;
+  --sidebar: #fbfbfb;
+  --sidebar-foreground: #252525;
+  --sidebar-primary: #343434;
+  --sidebar-primary-foreground: #fbfbfb;
+  --sidebar-accent: #f7f7f7;
+  --sidebar-accent-foreground: #343434;
+  --sidebar-border: #e8e8e8;
+  --sidebar-ring: #b4b4b4;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.dark {
+  --background: #252525;
+  --foreground: #fcfcfc;
+  --card: #343434;
+  --card-foreground: #fcfcfc;
+  --popover: #343434;
+  --popover-foreground: #fcfcfc;
+  --primary: #e8e8e8;
+  --primary-foreground: #343434;
+  --secondary: #444444;
+  --secondary-foreground: #fcfcfc;
+  --muted: #444444;
+  --muted-foreground: #b4b4b4;
+  --accent: #444444;
+  --accent-foreground: #fcfcfc;
+  --destructive: #ae5239;
+  --border: #ffffff1a;
+  --input: #ffffff26;
+  --ring: #8a8a8a;
+  --chart-1: #787f65;
+  --chart-2: #ab7f7f;
+  --chart-3: #b58c5a;
+  --chart-4: #97537e;
+  --chart-5: #988047;
+  --sidebar: #343434;
+  --sidebar-foreground: #fcfcfc;
+  --sidebar-primary: #787f65;
+  --sidebar-primary-foreground: #fcfcfc;
+  --sidebar-accent: #444444;
+  --sidebar-accent-foreground: #fcfcfc;
+  --sidebar-border: #ffffff1a;
+  --sidebar-ring: #8a8a8a;
+}
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+
+/* Add this to your globals.css file */
+
+.pdf-export {
+  /* Set a simple white background for the PDF */
+  background-color: #ffffff !important;
+  padding: 2rem !important; /* Ensure padding is consistent */
+}
+
+/* Override text, border, and background colors with simple hex codes */
+.pdf-export .dark\:bg-muted-foreground {
+  background-color: #ffffff !important;
+}
+
+.pdf-export .text-gray-800 { color: #1f2937 !important; }
+.pdf-export .text-gray-700 { color: #374151 !important; }
+.pdf-export .text-gray-600 { color: #4b5563 !important; }
+.pdf-export .text-gray-500 { color: #6b7280 !important; }
+
+.pdf-export .text-indigo-700 { color: #4338ca !important; }
+.pdf-export .hover\:text-indigo-600:hover { color: #4f46e5 !important; }
+
+.pdf-export .border-gray-200 { border-color: #e5e7eb !important; }
+.pdf-export .border-indigo-500 { border-color: #6366f1 !important; }
+
+.pdf-export .bg-indigo-100 { background-color: #e0e7ff !important; }
+
+/* Hide the download button in the PDF itself */
+.pdf-export .download-btn {
+  display: none !important;
 }
