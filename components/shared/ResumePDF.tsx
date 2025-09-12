@@ -10,7 +10,6 @@ import {
   Font,
 } from '@react-pdf/renderer';
 
-// Define the shape of the resume data to ensure type safety.
 interface ResumeEducation {
   school: string;
   degree: string;
@@ -38,16 +37,12 @@ interface ResumeData {
   skills: string;
 }
 
-// Register the Font Awesome font for icons
-// Replace the src path with the actual path to your downloaded font file.
-// You can download it from: https://fontawesome.com/download
 Font.register({
   family: 'FontAwesome',
   src: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.ttf',
 });
 
 const ResumePDF = ({ data }: { data: ResumeData }) => {
-  // Stylesheet for the PDF document
   const styles = StyleSheet.create({
     page: {
       padding: 40,

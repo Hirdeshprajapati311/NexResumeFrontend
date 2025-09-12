@@ -105,7 +105,6 @@ export const createNewResumeVersion = async(token: string, resumeId: string, ver
       const errorData = await res.json();
       throw new Error(errorData.message || 'Failed to create new resume version');
     }
-    // If the response is not JSON, use the status text as the error message.
     throw new Error(res.statusText || 'Failed to create new resume version');
   }
   return res.json()
@@ -121,7 +120,6 @@ export async function deleteResume(token: string, id: string) {
   });
 
   if (!res.ok) {
-    // If the server sent a JSON error, parse it. Otherwise, use the status text.
     const contentType = res.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
       const errorData = await res.json();
@@ -129,5 +127,4 @@ export async function deleteResume(token: string, id: string) {
     }
     throw new Error(res.statusText || 'Failed to delete resume');
   }
-  // A 204 No Content response has no body, so we just return.
 }

@@ -71,7 +71,6 @@ const AllResumes = ({ name, className }: { name: string; className?: string }) =
                     </PopoverTrigger>
                     <PopoverContent side="bottom" className="w-40 p-1">
                       <div className="space-y-1">
-                        {/* Pass resume._id directly */}
                         <button
                           onClick={() => router.push(`/edit-resume/${resume._id}`)}
                           className="w-full text-left cursor-pointer p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"

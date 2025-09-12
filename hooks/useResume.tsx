@@ -34,7 +34,7 @@ export interface Resume {
   _id: string;
   userId: string;
   title: string;
-  currentVersionId: string; // This is just the ID, not the full object
+  currentVersionId: string; 
   versions?: ResumeVersion[];
   createdAt: string;
   updatedAt: string;
@@ -80,7 +80,6 @@ export const useResume = () => {
         if (resume) {
           setSelectedResume(resume as Resume);
 
-          // Find the current version from the versions array
           if (resume.versions && resume.currentVersionId) {
             const currentVer = resume.versions.find(
               (version: ResumeVersion) => version._id === resume.currentVersionId
@@ -88,11 +87,9 @@ export const useResume = () => {
             if (currentVer) {
               setCurrentVersion(currentVer as ResumeVersion);
             } else {
-              // If not found, use the first version as fallback
               setCurrentVersion(resume.versions[0] as ResumeVersion);
             }
           } else if (resume.versions && resume.versions.length > 0) {
-            // Fallback if no currentVersionId is set
             setCurrentVersion(resume.versions[0] as ResumeVersion);
           } else {
             setCurrentVersion(null);
