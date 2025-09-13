@@ -11,10 +11,6 @@ import { useResume } from '@/hooks/useResume';
 
 const Dashboard = () => {
   const router = useRouter()
-
-
-
-
   const  {resumes} = useResume()
 
   return (
@@ -23,7 +19,7 @@ const Dashboard = () => {
         resumes.length === 0 && (
           <Card onClick={() => router.push('/create-resume')} className='cursor-pointer  hover:scale-[101%] h-24 border-8 flex justify-center gap-0 items-center'>
             <h1 className='flex font-semibold text-muted-foreground items-center text-xl'> <Plus /> Create Resume</h1>
-            <p className='text-sm'>let's create your first resume</p>
+            <p className='text-sm'>let&apos;s create your first resume</p>
           </Card>
         )
 

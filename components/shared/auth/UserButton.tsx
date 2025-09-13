@@ -8,7 +8,6 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import useUser from '@/hooks/useUser';
-import { DialogTitle } from '@/components/ui/dialog';
 
 const UserButton = () => {
 

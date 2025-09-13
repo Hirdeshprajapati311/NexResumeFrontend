@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import useUser from '@/hooks/useUser';
-import { useResume, ResumeVersion } from '@/hooks/useResume';
+import { useResume } from '@/hooks/useResume';
 import { toast } from 'sonner';
 import { Textarea } from '@/components/ui/textarea';
 import { createNewResumeVersion, updateResumeVersion } from '@/lib/api';
@@ -16,7 +16,6 @@ import { Phone, Mail, GraduationCap, Briefcase, Loader2 } from 'lucide-react';
 const EditResumePage = () => {
   const params = useParams();
   const resumeId = Array.isArray(params.id) ? params.id[0] : params.id;
-  const router = useRouter();
   const { token } = useUser();
   const { fetchResumeByID, selectedResume, setSelectedResume, loading, currentVersion, setCurrentVersion } = useResume();
 
@@ -89,7 +88,7 @@ const EditResumePage = () => {
     });
   };
 
-  const handleExperienceChange = (index: number, field: string, value: any) => {
+  const handleExperienceChange = (index: number, field: string, value: string | string[]) => {
     setFormData(prev => {
       const newExperience = [...prev.experience];
       if (field === 'bullets' && typeof value === 'string') {
@@ -132,7 +131,6 @@ const EditResumePage = () => {
 
   // Update handleModifyCurrent
   const handleModifyCurrent = async () => {
-    // Add this check to ensure currentVersion and its _id exist
     if (!token || !resumeId || !currentVersion?._id) {
       toast.error("Cannot update: current version not found.");
       return;
@@ -140,10 +138,8 @@ const EditResumePage = () => {
 
     setIsSaving(true);
     try {
-      const updatedVersion: ResumeVersion = {
-        ...currentVersion, // Now safe
+      const updateData = {
         personal: {
-          ...(currentVersion.personal || {}),
           fullName: formData.fullName,
           phone: formData.phone,
           email: formData.email,
@@ -153,9 +149,9 @@ const EditResumePage = () => {
         education: formData.education,
         experience: formData.experience,
       };
-      // This is now also safe
-      const serverResponse = await updateResumeVersion(token, resumeId, currentVersion._id, updatedVersion);
-      setCurrentVersion(serverResponse);
+
+      const updatedVersion = await updateResumeVersion(token, resumeId, updateData);
+      setCurrentVersion(updatedVersion); // Now this should work
       toast.success("Current version updated");
     } catch (err) {
       console.error(err);
@@ -167,7 +163,6 @@ const EditResumePage = () => {
 
   // Update handleCreateNewVersion similarly
   const handleCreateNewVersion = async () => {
-    // Add this check to ensure a base version exists before creating a new one
     if (!token || !resumeId || !currentVersion) {
       toast.error("Cannot create new version: base version not loaded.");
       return;
@@ -176,10 +171,8 @@ const EditResumePage = () => {
 
     setIsSaving(true);
     try {
-      const newVersion: ResumeVersion = {
-        ...currentVersion, // Now safe
+      const newVersionData = {
         personal: {
-          ...(currentVersion.personal || {}),
           fullName: formData.fullName,
           phone: formData.phone,
           email: formData.email,
@@ -189,9 +182,10 @@ const EditResumePage = () => {
         education: formData.education,
         experience: formData.experience,
       };
-      const serverResponse = await createNewResumeVersion(token, resumeId, newVersion, newTitle);
+
+      const serverResponse = await createNewResumeVersion(token, resumeId, newVersionData, newTitle);
       setSelectedResume(serverResponse.resume);
-      setCurrentVersion(serverResponse.newVersion);
+      setCurrentVersion(serverResponse.newVersion); // This should already be correct
       setIsCreatingNew(false);
       setNewTitle('');
       toast.success("New version created");

@@ -1,8 +1,7 @@
-import React, { PropsWithChildren } from 'react';
 
-type Props = PropsWithChildren<{}>
 
-const AuthWrapper = ({ children }: Props) => {
+
+const AuthWrapper:React.FC<React.PropsWithChildren> = ({ children }) => {
 
 
   return (

@@ -1,11 +1,20 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
+import { 
+  AuthResponse, 
+  CreateResumeData, 
+  UpdateResumeData, 
+  Resume, 
+  ResumeVersion, 
+  ResumeVersionResponse,
+  ErrorResponse 
+} from './types/resume';
 
-type ResumeVersionResponse = {
-  resume: any;
-  newVersion: any;
-};
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
-export async function register(data: { username: string; email: string; password: string }) {
+export async function register(data: { 
+  username: string; 
+  email: string; 
+  password: string; 
+}): Promise<AuthResponse> {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
     headers: {
@@ -14,25 +23,36 @@ export async function register(data: { username: string; email: string; password
     body: JSON.stringify(data)
   });
 
-  if (!res.ok) throw new Error((await res.json()).error || "Registration failed")
-  return res.json()
+  if (!res.ok) {
+    const errorData: ErrorResponse = await res.json();
+    throw new Error(errorData.error || errorData.message || "Registration failed");
+  }
+  
+  return res.json();
 }
 
-
-export async function login(data: { email: string; password: string }) {
+export async function login(data: { 
+  email: string; 
+  password: string; 
+}): Promise<AuthResponse> {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   });
-  if(!res.ok) throw new Error((await res.json()).error || "Login failed")
-  return res.json()
+  
+  if (!res.ok) {
+    const errorData: ErrorResponse = await res.json();
+    throw new Error(errorData.error || errorData.message || "Login failed");
+  }
+  
+  return res.json();
 }
 
-
-export async function createResume(token: string,
-  data: { title: string; personal?: any; education?: any; experience?: any; skills?:string[]}
-) {
+export async function createResume(
+  token: string,
+  data: CreateResumeData
+): Promise<Resume> {
   const res = await fetch(`${API_URL}/resume`, {
     method: "POST",
     headers: {
@@ -41,13 +61,16 @@ export async function createResume(token: string,
     },
     body: JSON.stringify(data),
   });
+  
   if (!res.ok) {
-    throw new Error((await res.json()).message || "Failed to create resume");
+    const errorData: ErrorResponse = await res.json();
+    throw new Error(errorData.message || "Failed to create resume");
   }
-  return res.json()
+  
+  return res.json();
 }
 
-export async function getUserResumes(token:string) {
+export async function getUserResumes(token: string): Promise<Resume[]> {
   const res = await fetch(`${API_URL}/resume`, {
     headers: {
       Authorization: `Bearer ${token}`
@@ -55,12 +78,14 @@ export async function getUserResumes(token:string) {
   });
 
   if (!res.ok) {
-    throw new Error((await res.json()).message || "Failed to fetch resumes")
+    const errorData: ErrorResponse = await res.json();
+    throw new Error(errorData.message || "Failed to fetch resumes");
   }
-  return res.json()
+  
+  return res.json();
 }
 
-export async function getResumeById(token: string, id: string) {
+export async function getResumeById(token: string, id: string): Promise<Resume> {
   const res = await fetch(`${API_URL}/resume/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -68,13 +93,18 @@ export async function getResumeById(token: string, id: string) {
   });
 
   if (!res.ok) {
-    throw new Error((await res.json()).message || "Failed to fetch resume")
+    const errorData: ErrorResponse = await res.json();
+    throw new Error(errorData.message || "Failed to fetch resume");
   }
-  return res.json()
+  
+  return res.json();
 }
 
-
-export async function updateResumeVersion(token: string, resumeId: string, versionId: string, data: any) {
+export async function updateResumeVersion(
+  token: string, 
+  resumeId: string, 
+  data: UpdateResumeData
+): Promise<ResumeVersion> {
   const res = await fetch(`${API_URL}/resume/${resumeId}`, {
     method: "PUT",
     headers: {
@@ -82,36 +112,44 @@ export async function updateResumeVersion(token: string, resumeId: string, versi
       "Authorization": `Bearer ${token}`
     },
     body: JSON.stringify(data)
-  })
+  });
+  
   if (!res.ok) {
-    throw new Error((await res.json()).message || "Failed to update resume version")
+    const errorData: ErrorResponse = await res.json();
+    throw new Error(errorData.message || "Failed to update resume version");
   }
-  return res.json()
-
+  
+  return res.json();
 }
 
-export const createNewResumeVersion = async(token: string, resumeId: string, versionData: any, newTitle: string):Promise<ResumeVersionResponse> => {
+export async function createNewResumeVersion(
+  token: string, 
+  resumeId: string, 
+  versionData: Omit<ResumeVersion, '_id' | 'resumeId' | 'version' | 'createdAt' | 'updatedAt'>,
+  newTitle: string
+): Promise<ResumeVersionResponse> {
   const res = await fetch(`${API_URL}/resume/${resumeId}/versions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
     },
-    body: JSON.stringify({ ...versionData, _id: undefined, title: newTitle })
+    body: JSON.stringify({ ...versionData, title: newTitle })
   });
+  
   if (!res.ok) {
     const contentType = res.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
-      const errorData = await res.json();
+      const errorData: ErrorResponse = await res.json();
       throw new Error(errorData.message || 'Failed to create new resume version');
     }
     throw new Error(res.statusText || 'Failed to create new resume version');
   }
-  return res.json()
+  
+  return res.json();
 }
 
-export async function deleteResume(token: string, id: string) {
-
+export async function deleteResume(token: string, id: string): Promise<void> {
   const res = await fetch(`${API_URL}/resume/${id}`, {
     method: "DELETE",
     headers: {
@@ -122,7 +160,7 @@ export async function deleteResume(token: string, id: string) {
   if (!res.ok) {
     const contentType = res.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
-      const errorData = await res.json();
+      const errorData: ErrorResponse = await res.json();
       throw new Error(errorData.message || 'Failed to delete resume');
     }
     throw new Error(res.statusText || 'Failed to delete resume');

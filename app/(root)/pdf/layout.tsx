@@ -1,8 +1,7 @@
 import React from 'react';
 
-type Props = React.PropsWithChildren<{}>
 
-const PDFLayout = ({children}:Props) => {
+const PDFLayout:React.FC<React.PropsWithChildren> = ({children}) => {
   return (
     <div className='flex w-full h-full flex-col gap-4'>
       {children}

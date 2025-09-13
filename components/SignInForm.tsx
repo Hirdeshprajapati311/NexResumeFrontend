@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { login } from '@/lib/api'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 
 
@@ -53,8 +54,14 @@ const SignInForm = () => {
 
       toast.success("Login successfull!")
       console.log("Token:",token);
-    } catch (err: any) {
-      toast.error(err.message)
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        // fallback for non-Error values
+        toast.error("An unknown error occurred");
+        console.error(err);
+      }
     }
   }
 
@@ -93,8 +100,8 @@ const SignInForm = () => {
           </Button>
         </form>
 
-        <p className='flex gap-1 self-end mt-2 text-sm'>Don't have an account |
-        <a className='text-blue-500 hover:underline' href="/signup"> Sign Up</a>
+        <p className='flex gap-1 self-end mt-2 text-sm'>Don&apos;t have an account |
+        <Link className='text-blue-500 hover:underline' href="/signup"> Sign Up</Link>
         </p>
       </CardContent>
     </Card>

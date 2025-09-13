@@ -13,10 +13,12 @@ import { useRouter } from 'next/navigation';
 import { deleteResume } from '@/lib/api';
 import useUser from '@/hooks/useUser';
 
+import { Resume } from '@/lib/types/resume';
+
 const AllResumes = ({ name, className }: { name: string; className?: string }) => {
-  const { resumes, loading, error,setResumes } = useResume();
-  const {token} = useUser()
-  const router = useRouter(); 
+  const { resumes, loading, error, setResumes } = useResume();
+  const { token } = useUser()
+  const router = useRouter();
 
   const handleDelete = async (id: string) => {
     if (!token) {
@@ -30,11 +32,21 @@ const AllResumes = ({ name, className }: { name: string; className?: string }) =
 
     try {
       await deleteResume(token, id);
-      setResumes((prev: any[]) => prev.filter((r) => r._id !== id));
-    } catch (err: any) {
-      console.error("Delete failed:", err.message);
-      alert(`Delete failed: ${err.message}`);
+      setResumes((prev: Resume[]) => prev.filter((r) => r._id !== id));
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Delete failed:", err.message);
+        alert(`Delete failed: ${err.message}`);
+      } else {
+        console.error("Delete failed:", err);
+        alert("Delete failed: unknown error");
+      }
     }
+  };
+
+  const getCurrentVersionNumber = (resume: Resume) => {
+    const currentVersion = resume.versions?.find(v => v._id === resume.currentVersionId);
+    return currentVersion?.version;
   };
 
   return (
@@ -85,7 +97,7 @@ const AllResumes = ({ name, className }: { name: string; className?: string }) =
                   </Popover>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Current Version: {(resume.currentVersionId as any)?.version}
+                  Current Version: {getCurrentVersionNumber(resume) || 'N/A'}
                 </p>
               </div>
             ))}

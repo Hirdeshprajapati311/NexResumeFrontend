@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef, FC } from "react";
-import { Mail, Phone, ExternalLink, GraduationCap, Briefcase, ArrowDownNarrowWide, ArrowDown } from "lucide-react";
+import React, { useState, FC } from "react";
+import { Mail, Phone, ExternalLink, GraduationCap, Briefcase, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -14,6 +14,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import ResumePDF from "@/components/shared/ResumePDF";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useDebounce } from "@/hooks/useDebounce";
+
 
 
 
@@ -79,7 +80,7 @@ const Page: FC = () => {
 
 
 
-  const { user, token, loading, setLoading } = useUser()
+  const { token, setLoading } = useUser()
   const [showDialog, setShowDialog] = useState(false)
   const [resumeTitle, setResumeTitle] = useState("")
   const debounceTitle = useDebounce(resumeTitle, 600);
@@ -134,14 +135,27 @@ const Page: FC = () => {
           email: formData.email,
           summary: formData.summary,
         },
-        education: [formData.education],
-        experience: [formData.experience],
+        // Map local state to the structure expected by the API
+        education: [{
+          school: formData.education.school,
+          degree: formData.education.degree,
+          start: formData.education.startYear,
+          end: formData.education.endYear,
+        }],
+        experience: [{
+          company: formData.experience.company,
+          role: formData.experience.jobTitle,
+          start: formData.experience.startYear,
+          end: formData.experience.endYear,
+          bullets: formData.experience.achievements,
+        }],
         skills: formData.skills.split(',').map(s => s.trim()),
       };
 
-      const newResume = await createResume(token, structuredData);
+      await createResume(token, structuredData);
       toast.success("Resume created");
     } catch (error) {
+      console.error("Error creating resume:", error);
       toast.error("Failed to create resume")
     } finally {
       setLoading(false)

@@ -1,6 +1,5 @@
 
 
-import AllResumes from '@/components/AllResumes';
 import React from 'react';
 
 const AllPDF = () => {

@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { z } from 'zod'
 import { register as Register } from '@/lib/api'
 import { toast } from 'sonner'
+import Link from 'next/link'
 
 
 const schema = z.object({
@@ -41,8 +42,14 @@ const SignUpForm = () => {
       toast.success("Account created successfully!")
       console.log(res);
       reset();
-    } catch (err: any) {
-      toast.error(err.message)
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        // fallback for non-Error values
+        toast.error("An unknown error occurred");
+        console.error(err);
+      }
     }
   }
 
@@ -103,7 +110,7 @@ const SignUpForm = () => {
         </form>
 
         <p className='flex gap-1 self-end mt-2 text-sm'>Already registered |
-          <a className='text-blue-500 hover:underline' href="/signin"> Sign In</a>
+          <Link className='text-blue-500 hover:underline' href="/signin"> Sign In</Link>
         </p>
       </CardContent>
     </Card>

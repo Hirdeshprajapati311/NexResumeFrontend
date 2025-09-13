@@ -1,8 +1,7 @@
 import React from 'react';
 
-type Props = React.PropsWithChildren<{}>
 
-const layout = ({children}:Props) => {
+const layout:React.FC<React.PropsWithChildren> = ({children}) => {
   return (
     <div>
       {children}

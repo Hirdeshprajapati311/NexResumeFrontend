@@ -1,45 +1,9 @@
+// useResume.ts
 'use client'
 import { useCallback, useEffect, useState } from "react";
 import useUser from "./useUser";
 import { getUserResumes, getResumeById } from "@/lib/api";
-
-export interface ResumeVersion {
-  _id: string;
-  version: number;
-  personal: {
-    fullName: string;
-    phone: string;
-    email: string;
-    summary: string;
-  };
-  education: {
-    school: string;
-    degree: string;
-    start: string;
-    end: string;
-  }[];
-  experience: {
-    company: string;
-    role: string;
-    start: string;
-    end: string;
-    bullets: string[];
-  }[];
-  skills: string[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Resume {
-  _id: string;
-  userId: string;
-  title: string;
-  currentVersionId: string; 
-  versions?: ResumeVersion[];
-  createdAt: string;
-  updatedAt: string;
-}
-
+import { Resume, ResumeVersion } from "@/lib/types/resume"; 
 export const useResume = () => {
   const { token } = useUser();
   const [resumes, setResumes] = useState<Resume[]>([]);
@@ -73,24 +37,23 @@ export const useResume = () => {
 
       try {
         const resume = await getResumeById(token, id);
-        console.log("Fetched resume:", resume);
-        console.log("Current version ID:", resume?.currentVersionId);
-        console.log("Versions:", resume?.versions);
 
         if (resume) {
-          setSelectedResume(resume as Resume);
+          setSelectedResume(resume);
 
           if (resume.versions && resume.currentVersionId) {
             const currentVer = resume.versions.find(
               (version: ResumeVersion) => version._id === resume.currentVersionId
             );
             if (currentVer) {
-              setCurrentVersion(currentVer as ResumeVersion);
+              setCurrentVersion(currentVer);
+            } else if (resume.versions.length > 0) {
+              setCurrentVersion(resume.versions[0]);
             } else {
-              setCurrentVersion(resume.versions[0] as ResumeVersion);
+              setCurrentVersion(null);
             }
           } else if (resume.versions && resume.versions.length > 0) {
-            setCurrentVersion(resume.versions[0] as ResumeVersion);
+            setCurrentVersion(resume.versions[0]);
           } else {
             setCurrentVersion(null);
           }

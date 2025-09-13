@@ -1,10 +1,8 @@
-import React, { PropsWithChildren } from 'react';
 import DesktopNav from './nav/DesktopNav';
 import MobileNav from './nav/MobileNav';
 
-type Props = PropsWithChildren<{}>
 
-const SidebarWrapper = ({children}:Props) => {
+const SidebarWrapper:React.FC<React.PropsWithChildren> = ({children}) => {
   return (
     <div className='w-full h-full p-4 flex flex-col lg:flex-row gap-4'>
       <DesktopNav />

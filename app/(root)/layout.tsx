@@ -1,9 +1,9 @@
 import SidebarWrapper from '@/components/shared/sidebar/SidebarWrapper';
 import React from 'react';
 
-type Props = React.PropsWithChildren<{}>
 
-const Layout = ({children}:Props) => {
+
+const Layout:React.FC<React.PropsWithChildren> = ({children}) => {
   return (
     <SidebarWrapper>
       {children}

@@ -2,9 +2,8 @@
 import useUser from '@/hooks/useUser';
 import React from 'react';
 
-type Props = React.PropsWithChildren<{}>
 
-const DashboardLayout = ({ children }: Props) => {
+const DashboardLayout:React.FC<React.PropsWithChildren> = ({ children }) => {
   
   const {user} = useUser()
 
